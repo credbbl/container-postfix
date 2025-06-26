@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Workaround: post-install only reads variables if main.cf exists, but fails otherwise
+touch /var/lib/postfix/main.cf /var/lib/postfix/master.cf
+/usr/lib/postfix/sbin/post-install meta_directory=/etc/postfix-meta config_directory=/var/lib/postfix create-missing
+# Workaround: we can't use set-permissions to modify wrong volume permissions
+chown postfix /var/lib/postfix/
+
+exec /usr/lib/postfix/sbin/master -is "$@"
